@@ -1,4 +1,5 @@
 import Queue
+from tqdm import tqdm
 
 m = None
 vehicles = None
@@ -105,21 +106,33 @@ def process(indata):
     global m, vehicles, rides, cur_time
     m, vehicles, rides = indata
 
-    cur_time = 0
+    cur_time, last_remove, last_time = 0, 0, 0
     ride_queue = Queue.PriorityQueue()
-    ride_queue.put(map(lambda v: (0, v), vehicles))
 
-    while cur_time <= m.T and not ride_queue.empty():
-        free_vehicles = ride_queue.get()
+    planned_events = assign(vehicles)
+    for e in planned_events:
+        ride_queue.put(e)
 
-        if type(free_vehicles) == tuple:
-            cur_time = free_vehicles[0]
-            planned_events = assign([free_vehicles[1]])
-        else:
-            cur_time = free_vehicles[0][0]
-            planned_events = assign(map(lambda tup: tup[1], free_vehicles))
+    with tqdm(total=m.T) as pbar:
+        while cur_time <= m.T and not ride_queue.empty():
+            # Prune the rides list a little
+            if cur_time - last_remove > 1000:
+                remove_old()
+                last_remove = cur_time
 
-        for e in planned_events:
-            ride_queue.put(e)
+            free_vehicles = ride_queue.get()
+
+            if type(free_vehicles) == tuple:
+                cur_time = free_vehicles[0]
+                planned_events = assign([free_vehicles[1]])
+            else:
+                cur_time = free_vehicles[0][0]
+                planned_events = assign(map(lambda tup: tup[1], free_vehicles))
+
+            for e in planned_events:
+                ride_queue.put(e)
+
+            pbar.update(cur_time - last_time)
+            last_time = cur_time
 
     return vehicles
