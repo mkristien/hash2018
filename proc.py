@@ -27,7 +27,7 @@ def remove_old():
             count += 1
     print 'remove old rides', count
 
-def remove_unreachange():
+def remove_unreachable():
     global cur_time, rides, vehicles
     to_remove = []
     for ride in rides:
@@ -62,9 +62,11 @@ def new_time(ride, v):
     global cur_time
     to_start = dist(ride.start_loc, v.cur_pos)
     wait =  ride.start_t - (cur_time + to_start)
+    if wait < 0:
+        wait = 0
     to_end = ride.duration
 
-    return to_start + wait + to_end
+    return cur_time + to_start + wait + to_end
 
 
 # returns [score]
@@ -75,6 +77,15 @@ def scores_per_vehicle(vehicle):
         scores.append(score_ride_per_vehicle(ride, vehicle))
     return scores
 
+def assign(ride, vehicle):
+    global rides
+
+    time = new_time(ride,vehicle)
+
+    vehicle.rides.append(ride.id)
+    rides.remove(ride)
+    return (time, vehicle)
+
 # returns [(new_time, vehicle)]
 def assign(vehicles):
     global rides
@@ -83,10 +94,7 @@ def assign(vehicles):
         scores = scores_per_vehicle(v)
         for i, score in enumerate(scores):
             if score > 0:
-                ride = rides[i]
-                result.append( (new_time(ride, v), v) )
-                v.rides.append(ride.id)
-                rides.remove(ride)
+                result.append(assign(rides[i], vehicle))
                 break
     return result
 
