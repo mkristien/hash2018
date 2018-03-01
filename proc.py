@@ -101,16 +101,17 @@ def process(indata):
     ride_queue = Queue.PriorityQueue()
     ride_queue.put(map(lambda v: (0, v), vehicles))
 
-    while cur_time <= m.T:
+    while cur_time <= m.T and not ride_queue.empty():
         free_vehicles = ride_queue.get()
 
         if type(free_vehicles) == tuple:
             cur_time = free_vehicles[0]
-            ride_queue.put(assign([free_vehicles[1]]))
+            planned_events = assign([free_vehicles[1]])
         else:
             cur_time = free_vehicles[0][0]
             planned_events = assign(map(lambda tup: tup[1], free_vehicles))
-            for e in planned_events:
-                ride_queue.put(e)
+
+        for e in planned_events:
+            ride_queue.put(e)
 
     return vehicles
