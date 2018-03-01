@@ -28,7 +28,7 @@ def remove_old():
     print 'remove old rides', count
 
 def remove_unreachange():
-    global cur_time, rides, vehicles:
+    global cur_time, rides, vehicles
     to_remove = []
     for ride in rides:
         max_score = 0
