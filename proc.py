@@ -26,7 +26,8 @@ def remove_old():
         if ride.start_t_max < cur_time:
             rides.remove(ride)
             count += 1
-    print 'remove old rides', count
+    if count != 0:
+        print 'remove old rides', count
 
 def remove_unreachable():
     global cur_time, rides, vehicles
