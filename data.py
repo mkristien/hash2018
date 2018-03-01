@@ -49,9 +49,9 @@ def load(infile):
 def store(outfile, vehicles):
     ''' Accepts output file and output data dictionary
     '''
-    with open(outfile, 'w'):
+    with open(outfile, 'w') as f:
         for v in vehicles:
-            print len(v.rides),
+            f.write("{} ".format(len(v.rides)))
             for r in v.rides:
-                print r,
-            print ''    # new line, start next vehicle output
+                f.write("{} ".format(str(r)))
+            f.write('\n')    # new line, start next vehicle output
