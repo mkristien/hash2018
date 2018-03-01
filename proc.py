@@ -31,7 +31,18 @@ def remove_unreachange():
     global cur_time, rides, vehicles:
     to_remove = []
     for ride in rides:
-        pass
+        max_score = 0
+        for v in vehicles:
+            score = score_ride_per_vehicle(ride, v)
+            if score > max_score:
+                max_score = score
+                break
+        if max_score == 0:
+            to_remove.append(ride)
+
+    for ride in to_remove:
+        rides.remove(ride)
+    print 'removed unreachanble', len(to_remove)
 
 
 def score_ride_per_vehicle(ride, vehicle):
@@ -90,7 +101,6 @@ def process(indata):
     ride_queue = Queue.PriorityQueue()
     ride_queue.put(map(lambda v: (0, v), vehicles))
 
-    import ipdb; ipdb.set_trace()
     while cur_time <= m.T:
         free_vehicles = ride_queue.get()
 
