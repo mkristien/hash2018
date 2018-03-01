@@ -98,8 +98,10 @@ def assign(vehicles):
     global rides
     result = []
     for v in vehicles:
+        if len(rides) == 0:
+            break
         i = np.argmax(scores_per_time(v))
-        result.append(assign_ride(rides[i], v)))
+        result.append(assign_ride(rides[i], v))
     return result
 
 '''
