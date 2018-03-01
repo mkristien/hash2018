@@ -1,5 +1,6 @@
 import Queue
 from tqdm import tqdm
+import numpy as np
 
 m = None
 vehicles = None
@@ -26,8 +27,6 @@ def remove_old():
         if ride.start_t_max < cur_time:
             rides.remove(ride)
             count += 1
-    if count != 0:
-        print 'remove old rides', count
 
 def remove_unreachable():
     global cur_time, rides, vehicles
@@ -44,8 +43,6 @@ def remove_unreachable():
 
     for ride in to_remove:
         rides.remove(ride)
-    print 'removed unreachanble', len(to_remove)
-
 
 def score_ride_per_vehicle(ride, vehicle):
     global m, cur_time
@@ -70,13 +67,21 @@ def new_time(ride, v):
 
     return cur_time + to_start + wait + to_end
 
-
 # returns [score]
 def scores_per_vehicle(vehicle):
     global rides, cur_time
     scores = []
     for ride in rides:
         scores.append(score_ride_per_vehicle(ride, vehicle))
+    return scores
+
+def scores_per_time(vehicle):
+    global rides, cur_time
+    scores = []
+    for ride in rides:
+        score = score_ride_per_vehicle(ride, vehicle)
+        time = new_time(ride, vehicle) - cur_time
+        scores.append(score / float(time))
     return scores
 
 def assign_ride(ride, vehicle):
@@ -93,11 +98,8 @@ def assign(vehicles):
     global rides
     result = []
     for v in vehicles:
-        scores = scores_per_vehicle(v)
-        for i, score in enumerate(scores):
-            if score > 0:
-                result.append(assign_ride(rides[i], v))
-                break
+        i = np.argmax(scores_per_time(v))
+        result.append(assign_ride(rides[i], v)))
     return result
 
 '''
