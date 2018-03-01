@@ -1,3 +1,4 @@
+import Queue
 
 m = None
 vehicles = None
@@ -43,7 +44,24 @@ def score_ride_per_vehicle(ride, vehicle, cur_time):
 returns outdata
 '''
 def process(indata):
-    global m, vehicles, rides
+    global m, vehicles, rides, cur_time
     m, vehicles, rides = indata
 
-    
+    cur_time = 0
+    ride_queue = Queue.PriorityQueue()
+    ride_queue.put(map(lambda v: (0, v), vehicles))
+
+    import ipdb; ipdb.set_trace()
+    while cur_time <= m.T:
+        free_vehicles = ride_queue.get()
+
+        if type(free_vehicles) == tuple:
+            cur_time = free_vehicles[0]
+            ride_queue.put(assign([free_vehicles[1]]))
+        else:
+            cur_time = free_vehicles[0][0]
+            planned_events = assign(map(lambda tup: tup[1], free_vehicles))
+            for e in planned_events:
+                ride_queue.put(e)
+
+    return vehicles
