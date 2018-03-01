@@ -2,6 +2,7 @@
 m = None
 vehicles = None
 rides = None
+cur_time = 0
 
 # Hamiltonian distance of two locations
 def dist(a, b):
@@ -25,8 +26,8 @@ def remove_old(rides, cur_time):
 
     print 'remove old rides', count
 
-def score_ride_per_vehicle(ride, vehicle, cur_time):
-    global m
+def score_ride_per_vehicle(ride, vehicle):
+    global m, cur_time
     score = 0
     time_empty = dist(vehicle.cur_pos, ride.start_loc)
     start_t_min = cur_time + time_empty
@@ -39,6 +40,19 @@ def score_ride_per_vehicle(ride, vehicle, cur_time):
     return score
 
 
+def scores_per_vehicle(vehicle):
+    global rides, cur_time
+    scores = []
+    for ride in rides:
+        scores.append(score_ride_per_vehicle(ride, vehicle))
+
+def assign(vehicles):
+    scores = []
+    for v in vehicles:
+        scores.append(scores_per_vehicle(v))
+
+    pass
+
 '''
 returns outdata
 '''
@@ -46,4 +60,3 @@ def process(indata):
     global m, vehicles, rides
     m, vehicles, rides = indata
 
-    

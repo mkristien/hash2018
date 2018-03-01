@@ -44,7 +44,9 @@ def load(infile):
     return m, vehicles, rides
 
 
-def store(outfile, data):
+def store(outfile, vehicles):
     ''' Accepts output file and output data dictionary
     '''
-    pass
+    with open(outfile, 'w'):
+        for v in vehicles:
+            pass
