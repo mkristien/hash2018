@@ -77,7 +77,7 @@ def scores_per_vehicle(vehicle):
         scores.append(score_ride_per_vehicle(ride, vehicle))
     return scores
 
-def assign(ride, vehicle):
+def assign_ride(ride, vehicle):
     global rides
 
     time = new_time(ride,vehicle)
@@ -94,7 +94,7 @@ def assign(vehicles):
         scores = scores_per_vehicle(v)
         for i, score in enumerate(scores):
             if score > 0:
-                result.append(assign(rides[i], vehicle))
+                result.append(assign_ride(rides[i], v))
                 break
     return result
 
