@@ -3,6 +3,7 @@ import Queue
 m = None
 vehicles = None
 rides = None
+cur_time = 0
 
 # Hamiltonian distance of two locations
 def dist(a, b):
@@ -17,17 +18,24 @@ def start_t_max(start_loc, end_loc, end_time):
     return end_time - distance
 
 # remove rides that have the latest start time in the past
-def remove_old(rides, cur_time):
+def remove_old():
+    global rides, cur_time
     count = 0
     for ride in rides:
         if ride.start_t_max < cur_time:
             rides.remove(ride)
             count += 1
-
     print 'remove old rides', count
 
-def score_ride_per_vehicle(ride, vehicle, cur_time):
-    global m
+def remove_unreachange():
+    global cur_time, rides, vehicles:
+    to_remove = []
+    for ride in rides:
+        pass
+
+
+def score_ride_per_vehicle(ride, vehicle):
+    global m, cur_time
     score = 0
     time_empty = dist(vehicle.cur_pos, ride.start_loc)
     start_t_min = cur_time + time_empty
@@ -39,6 +47,37 @@ def score_ride_per_vehicle(ride, vehicle, cur_time):
         score += ride.duration
     return score
 
+def new_time(ride, v):
+    global cur_time
+    to_start = dist(ride.start_loc, v.cur_pos)
+    wait =  ride.start_t - (cur_time + to_start)
+    to_end = ride.duration
+
+    return to_start + wait + to_end
+
+
+# returns [score]
+def scores_per_vehicle(vehicle):
+    global rides, cur_time
+    scores = []
+    for ride in rides:
+        scores.append(score_ride_per_vehicle(ride, vehicle))
+    return scores
+
+# returns [(new_time, vehicle)]
+def assign(vehicles):
+    global rides
+    result = []
+    for v in vehicles:
+        scores = scores_per_vehicle(v)
+        for i, score in enumerate(scores):
+            if score > 0:
+                ride = rides[i]
+                result.append( (new_time(ride, v), v) )
+                v.rides.append(ride.id)
+                rides.remove(ride)
+                break
+    return result
 
 '''
 returns outdata
