@@ -13,7 +13,7 @@ class Vehicle(object):
 
 
 class Ride(object):
-    def __init__(self, start_x, start_y, end_x, end_y, t_start, t_finish, id):
+    def __init__(self, id, start_x, start_y, end_x, end_y, t_start, t_finish):
         self.id = id
         self.start_loc = [start_x, start_y]
         self.end_loc = [end_x, end_y]
@@ -41,7 +41,7 @@ def load(infile):
         rides = []
         count = 0
         for i, ride_line in enumerate(f.readlines()):
-            rides.append(Ride(*map(int, ride_line.split()), i))
+            rides.append(Ride(i, *map(int, ride_line.split())))
 
     return m, vehicles, rides
 
