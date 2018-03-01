@@ -46,6 +46,7 @@ def scores_per_vehicle(vehicle):
     for ride in rides:
         scores.append(score_ride_per_vehicle(ride, vehicle))
 
+# returns [(new_time, vehicle)]
 def assign(vehicles):
     scores = []
     for v in vehicles:

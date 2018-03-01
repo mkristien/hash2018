@@ -13,7 +13,8 @@ class Vehicle(object):
 
 
 class Ride(object):
-    def __init__(self, start_x, start_y, end_x, end_y, t_start, t_finish):
+    def __init__(self, start_x, start_y, end_x, end_y, t_start, t_finish, id):
+        self.id = id
         self.start_loc = [start_x, start_y]
         self.end_loc = [end_x, end_y]
         self.start_t = t_start
@@ -38,8 +39,9 @@ def load(infile):
             vehicles.append(Vehicle())
 
         rides = []
-        for ride_line in f.readlines():
-            rides.append(Ride(*map(int, ride_line.split())))
+        count = 0
+        for i, ride_line in enumerate(f.readlines()):
+            rides.append(Ride(*map(int, ride_line.split()), i))
 
     return m, vehicles, rides
 
@@ -49,4 +51,7 @@ def store(outfile, vehicles):
     '''
     with open(outfile, 'w'):
         for v in vehicles:
-            pass
+            print len(v.rides),
+            for r in v.rides:
+                print r,
+            print ''    # new line, start next vehicle output
