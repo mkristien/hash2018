@@ -9,6 +9,7 @@ class Map(object):
 class Vehicle(object):
     def __init__(self):
         self.cur_pos = [0, 0]
+        self.rides = []
 
 
 class Ride(object):
